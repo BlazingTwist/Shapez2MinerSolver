@@ -1,0 +1,588 @@
+body {
+    padding: 0;
+    margin: 0;
+    --gui-scale: 1;
+    --font-scale: 1;
+    --color-shift: 0;
+    --ftue-done: 0;
+    --sidebar-open: 0;
+    background-color: var(--color);
+
+    --thinLineFixed: calc(2px * (1 + (var(--gui-scale) / 4)));
+    --thinLine: calc(0.2em * var(--gui-scale))
+}
+
+span, button, input {
+    background: none;
+    border: none;
+}
+span, button, input, textarea, select {
+    font-size: 1em;
+}
+#settings-panel button,
+#settings-panel input,
+#settings-panel select {
+    font-size: 0.8em;
+}
+#settings-panel select {
+    padding-right: 2ch;
+}
+#settings-panel input[type=checkbox] {
+    width: 1em;
+    height: 1em;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input[type=number] {
+    -moz-appearance: textfield;
+}
+#settings-panel textarea {
+    white-space: nowrap;
+    scrollbar-width: thin;
+}
+
+.transparent-checkbox {
+    position: relative;
+}
+.transparent-checkbox:has(input:hover):after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    background-color: rgba(255, 255, 255, 0.3);
+    left: calc(-3 * var(--thinLine));
+}
+.transparent-checkbox:has(input:focus):after {
+    content: '';
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+    border: 1px solid black;
+    left: calc(-3 * var(--thinLine));
+}
+.transparent-checkbox input {
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+.transparent-checkbox .input-check-on,
+.transparent-checkbox .input-check-off {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    left: calc(-3 * var(--thinLine));
+}
+.transparent-checkbox .input-check-on {
+    visibility: hidden;
+}
+.transparent-checkbox .input-check-off {
+    visibility: visible;
+}
+.transparent-checkbox:has(input:checked) .input-check-on {
+    visibility: visible;
+}
+.transparent-checkbox:has(input:checked) .input-check-off {
+    visibility: hidden;
+}
+
+select,
+textarea {
+    background: unset;
+    border: none;
+}
+
+.flex-center {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.window-frame {}
+.window-frame .window-fold-content {
+    display: none;
+}
+.window-frame[folded] .window-content {
+    display: none;
+}
+.window-frame[folded] .window-fold-content {
+    display: unset;
+}
+.window-frame[folded] {
+    padding-bottom: var(--edgeCut);
+}
+.window-after-ftue:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, 0.4);
+    opacity: calc(100% * (1 - var(--ftue-done)));
+    transition: opacity 0.5s;
+    z-index: 1;
+    border-radius: calc(var(--edgeCut) + var(--bevel)); /* not technically correct, but good enough, you're not supposed to look at it. */
+}
+
+.sidebar-frame {
+    width: calc((4em * (1 - var(--sidebar-open))) + min(100vw - (var(--window-width) + 2em), 4em + var(--sidebar-width)) * var(--sidebar-open));
+    display: grid;
+    grid-template-columns: 1fr 4em;
+    transition: width 0.3s;
+}
+
+.clickable:hover {
+    /** invert is needed because brightness boost alone does nothing for black. (which is strange, I would have expected it to turn gray) */
+    filter: invert(5%) brightness(115%);
+    cursor: pointer;
+}
+.clickable-light:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+.hoverable:hover {
+    /** invert is needed because brightness boost alone does nothing for black. (which is strange, I would have expected it to turn gray) */
+    filter: invert(5%) brightness(115%);
+}
+.drag-horiz,
+.drag-vert {
+    touch-action: none;
+}
+.drag-horiz:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: ew-resize;
+}
+.drag-vert:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: ns-resize;
+}
+
+.slider-vertical {
+    /* https://stackoverflow.com/questions/15935837/how-to-display-a-range-input-slider-vertically */
+    writing-mode: vertical-lr;
+    direction: rtl;
+    vertical-align: bottom;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10;
+    pointer-events: none;
+}
+.shadow {
+    box-shadow: var(--bevel) var(--bevel) rgba(0, 0, 0, 0.4);
+}
+
+.tooltip-item {
+    position: absolute;
+    left: calc(2 * var(--bevel));
+    right: calc(2 * var(--bevel));
+    top: calc(2 * var(--bevel));
+    display: none;
+    z-index: 10;
+    box-shadow: var(--bevel) var(--bevel) rgba(0, 0, 0, 0.4);
+}
+.tooltip-wrapper:hover .tooltip-item {
+    display: grid;
+}
+
+span code {
+    background-color: rgba(0, 0, 0, 0.7);
+    padding: 0 0.25em;
+    color: lightgray;
+    font-size: 0.9em;
+}
+
+.toast {
+    display: grid;
+    box-shadow: var(--bevel) var(--bevel) rgba(0, 0, 0, 0.4);
+    transform: translate(-50%, -100%);
+    opacity: 0;
+}
+.toast.show {
+    opacity: 100%;
+    transition: opacity 0.2s;
+}
+
+.cut-10 {
+    --edgeCut: calc(1em * var(--gui-scale) / 1.6);
+}
+.cut-8 {
+    --edgeCut: calc(1em * var(--gui-scale) / 2);
+}
+.cut-6 {
+    --edgeCut: calc(1em * var(--gui-scale) * 3 / 8);
+}
+.cut-4 {
+    --edgeCut: calc(1em * var(--gui-scale) / 4);
+}
+.cut-0 {
+    --edgeCut: 0px;
+}
+.bevel-4 {
+    --bevel: calc(1em * var(--gui-scale) / 4);
+}
+.bevel-2 {
+    --bevel: calc(1em * var(--gui-scale) / 8);
+}
+
+.ide-inspection-hotfix {
+    /* define all injected variables to suppress errors / add to autocomplete */
+    --cut-tl: 0px;
+    --cut-tr: 0px;
+    --cut-br: 0px;
+    --cut-bl: 0px;
+    --color: black;
+    --color2: black;
+    --preview-height: 0px;
+    --console-height: 0px;
+    --window-width: 0px;
+    --sidebar-width: 0px;
+    --num-columns: 0;
+}
+
+.console-grid {
+    height: var(--console-height);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-column-gap: 0.5em;
+    grid-auto-rows: fit-content(0);
+    overflow-y: scroll;
+    overflow-wrap: anywhere;
+    white-space: wrap;
+}
+.console-grid > *:nth-child(2n+1) {
+    position: relative;
+}
+.console-grid > *:nth-child(2n+1):after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 1px;
+    height: 100%;
+    transform: translateX(0.25em);
+    background-color: rgba(0, 0, 0, 0.6);
+}
+.log-warn {
+    color: #775400;
+}
+.log-error {
+    color: #a10000;
+}
+
+.stats-win-content b {
+    font-size: 1.1em;
+    font-weight: bolder;
+    background-color: hsl(calc(265 + var(--color-shift)), 10%, 38%);
+    padding: 0 3px;
+    letter-spacing: 1px;
+    color: #ffffff;
+}
+.stats-panel-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-row-gap: 0.5em;
+    border-left: var(--bevel) solid var(--color);
+    border-right: var(--bevel) solid var(--color);
+    padding-bottom: 0.5em;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.stats-panel-title {
+    display: grid;
+    grid-template-columns: auto auto 1fr;
+    font-size: 1.4em;
+    background-color: var(--color);
+}
+.stats-panel {
+    display: grid;
+    grid-column-gap: 2em;
+    grid-row-gap: 0.5em;
+    grid-template-columns: repeat(var(--num-columns), auto) 1fr;
+    padding: var(--bevel);
+}
+.stats-panel-trapezoid {
+    container-type: size;
+    position: relative;
+    width: 2.2em;
+    z-index: 1;
+}
+.stats-panel-trapezoid:after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--color2);
+    clip-path: polygon(
+            0 0,
+            calc(100% - 100cqh) 0,
+            100% 100%,
+            100cqh 100%
+    );
+    z-index: -1;
+}
+.stats-panel-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: span calc(var(--num-columns) + 1);
+    padding-left: 2em;
+}
+.stats-panel-row:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background-color: var(--color);
+}
+.stats-panel-row > *:not(:empty) {
+    z-index: 1;
+    background-color: var(--color2);
+    padding: 0 0.5em;
+    justify-self: start;
+}
+
+.stats-selector {
+    padding: 0.2em 0.5em;
+}
+.stats-selector-selected {
+    margin-bottom: 0.3em;
+}
+.stats-selector-selected .renderer-octagon {
+    --color: var(--color2);
+}
+
+.key-chord-container {
+    min-width: 4ch;
+    min-height: 0.8em;
+}
+.key-chord-container > *:not(:last-child) {
+    border-bottom: var(--thinLineFixed) solid var(--color);
+}
+
+.renderer-octagon {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    clip-path: polygon(
+            0 calc(min(50%, var(--cut-tl))),
+            calc(min(50%, var(--cut-tl))) 0,
+            calc(max(50%, 100% - (var(--cut-tr)))) 0,
+            100% calc(min(50%, var(--cut-tr))),
+            100% calc(max(50%, 100% - (var(--cut-br)))),
+            calc(max(50%, 100% - (var(--cut-br)))) 100%,
+            calc(min(50%, var(--cut-bl))) 100%,
+            0 calc(max(50%, 100% - (var(--cut-bl))))
+    );
+    z-index: -1;
+}
+
+.renderer-octagon-left { /* left bevel */
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    --bev-tl: calc(min(50%, max(var(--bevel), var(--cut-tl) + (var(--bevel) / 2))));
+    --bev-bl: calc(min(50%, max(var(--bevel), var(--cut-bl) + (var(--bevel) / 2))));
+    clip-path: polygon(
+            var(--cut-bl) 100%,
+            0 100%,
+            0 0,
+            var(--cut-tl) 0,
+            var(--bev-tl) var(--bevel),
+            var(--bevel) var(--bev-tl),
+            var(--bevel) calc(100% - var(--bev-bl)),
+            var(--bev-bl) calc(100% - var(--bevel))
+    );
+    z-index: -1;
+}
+
+.renderer-octagon-top { /* top bevel */
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    --bev-tr: calc(min(50%, max(var(--bevel), var(--cut-tr) + (var(--bevel) / 2))));
+    --bev-tl: calc(min(50%, max(var(--bevel), var(--cut-tl) + (var(--bevel) / 2))));
+    clip-path: polygon(
+            0 var(--cut-tl),
+            0 0,
+            100% 0,
+            100% var(--cut-tr),
+            calc(100% - var(--bevel)) var(--bev-tr),
+            calc(100% - var(--bev-tr)) var(--bevel),
+            var(--bev-tl) var(--bevel),
+            var(--bevel) var(--bev-tl)
+    );
+    z-index: -1;
+}
+
+.renderer-octagon-bottom { /* bottom bevel */
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    --bev-bl: calc(min(50%, max(var(--bevel), var(--cut-bl) + (var(--bevel) / 2))));
+    --bev-br: calc(min(50%, max(var(--bevel), var(--cut-br) + (var(--bevel) / 2))));
+    clip-path: polygon(
+            0 calc(100% - var(--cut-bl)),
+            0 100%,
+            100% 100%,
+            100% calc(100% - var(--cut-br)),
+            calc(100% - var(--bevel)) calc(100% - var(--bev-br)),
+            calc(100% - var(--bev-br)) calc(100% - var(--bevel)),
+            var(--bev-bl) calc(100% - var(--bevel)),
+            var(--bevel) calc(100% - var(--bev-bl))
+    );
+    z-index: -1;
+}
+
+.renderer-octagon-right { /* right bevel */
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    --bev-br: calc(min(50%, max(var(--bevel), var(--cut-br) + (var(--bevel) / 2))));
+    --bev-tr: calc(min(50%, max(var(--bevel), var(--cut-tr) + (var(--bevel) / 2))));
+    clip-path: polygon(
+            calc(100% - var(--cut-tr)) 0,
+            100% 0,
+            100% 100%,
+            calc(100% - var(--cut-br)) 100%,
+            calc(100% - var(--bev-br)) calc(100% - var(--bevel)),
+            calc(100% - var(--bevel)) calc(100% - var(--bev-br)),
+            calc(100% - var(--bevel)) var(--bev-tr),
+            calc(100% - var(--bev-tr)) var(--bevel)
+    );
+    z-index: -1;
+}
+
+.renderer-octagon-invertR {
+    background-color: var(--color);
+    clip-path: polygon(
+            0 calc(min(50%, var(--edgeCut))),
+            calc(min(50%, var(--edgeCut))) 0,
+            100% 0,
+            calc(max(50%, 100% - (var(--edgeCut)))) calc(min(50%, var(--edgeCut))),
+            calc(max(50%, 100% - (var(--edgeCut)))) calc(max(50%, 100% - (var(--edgeCut)))),
+            100% 100%,
+            calc(min(50%, var(--edgeCut))) 100%,
+            0 calc(max(50%, 100% - (var(--edgeCut))))
+    );
+}
+
+.renderer-trapezoid {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    clip-path: polygon(
+            calc(min(50%, var(--cut-tl))) 0,
+            calc(max(50%, 100% - var(--cut-tr))) 0,
+            calc(max(50%, 100% - var(--cut-br))) 100%,
+            calc(min(50%, var(--cut-bl))) 100%
+    );
+    z-index: -1;
+}
+
+.renderer-trapezoid-top {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    clip-path: polygon(
+            calc(max(50%, 100% - var(--cut-tr))) 0,
+            calc(max(50%, 100% - var(--cut-tr) - var(--bevel))) calc(min(50%, var(--bevel))),
+            calc(min(50%, var(--cut-tl) + var(--bevel))) calc(min(50%, var(--bevel))),
+            calc(min(50%, var(--cut-tl))) 0
+    );
+}
+
+.renderer-trapezoid-right {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    clip-path: polygon(
+            calc(max(50%, 100% - var(--cut-br))) 100%,
+            calc(max(50%, 100% - var(--cut-br) - var(--bevel))) calc(100% - min(50%, var(--bevel))),
+            calc(max(50%, 100% - var(--cut-tr) - 2 * var(--bevel))) 0,
+            calc(max(50%, 100% - var(--cut-tr))) 0
+    );
+}
+
+.renderer-trapezoid-bottom {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    clip-path: polygon(
+            calc(min(50%, var(--cut-bl))) 100%,
+            calc(min(50%, var(--cut-bl) + var(--bevel))) calc(100% - min(50%, var(--bevel))),
+            calc(max(50%, 100% - var(--cut-br) - var(--bevel))) calc(100% - min(50%, var(--bevel))),
+            calc(max(50%, 100% - var(--cut-br))) 100%
+    );
+}
+
+.renderer-trapezoid-left {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    clip-path: polygon(
+            calc(min(50%, var(--cut-tl))) 0,
+            calc(min(50%, var(--cut-tl) + 2 * var(--bevel))) 0,
+            calc(min(50%, var(--cut-bl) + var(--bevel))) calc(100% - min(50%, var(--bevel))),
+            calc(min(50%, var(--cut-bl))) 100%
+    );
+}
+
+.renderer-rect-tlCut {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    clip-path: polygon(
+            calc(var(--edgeCut) + (var(--bevel) / 2) - 1px) calc(var(--bevel) - 1px),
+            calc(100% - var(--bevel) + 1px) calc(var(--bevel) - 1px),
+            calc(100% - var(--bevel) + 1px) calc(100% - var(--bevel) + 1px),
+            calc(var(--bevel) - 1px) calc(100% - var(--bevel) + 1px),
+            calc(var(--bevel) - 1px) calc(var(--edgeCut) + 1px)
+    );
+}
+
+.renderer-rect-tlCut-left {
+    position: absolute;
+    inset: 0;
+    background-color: var(--color);
+    clip-path: polygon(
+            0 calc(100% - var(--bevel)),
+            0 var(--edgeCut),
+            var(--edgeCut) 0,
+            calc(var(--edgeCut) + (var(--bevel) / 2)) 0,
+            calc(var(--edgeCut) + (var(--bevel) / 2)) var(--bevel),
+            var(--bevel) calc(var(--edgeCut) + 1px),
+            var(--bevel) calc(100% - var(--bevel))
+    );
+}
+
+.renderer-rect-tlCut-top {
+    position: absolute;
+    inset: 0;
+    border-top: solid var(--bevel) var(--color);
+    clip-path: polygon(
+            var(--edgeCut) 0,
+            calc(100% - var(--bevel)) 0,
+            calc(100% - var(--bevel)) 100%,
+            var(--edgeCut) 100%
+    );
+}
+
+.renderer-rect-tlCut-right {
+    position: absolute;
+    inset: 0 0 var(--bevel) 0;
+    border-right: solid var(--bevel) var(--color);
+}
+
+.renderer-rect-tlCut-bottom {
+    position: absolute;
+    inset: 0;
+    border-bottom: solid var(--bevel) var(--color);
+}

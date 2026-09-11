@@ -4,30 +4,12 @@ const ResolvedTarget = std.Build.ResolvedTarget;
 const OptimizeMode = std.builtin.OptimizeMode;
 
 const BuildConfig = struct {
-    md5_module: *std.Build.Module,
+    shapez_solver_module: *std.Build.Module,
     target: ResolvedTarget,
     optimize: OptimizeMode,
     doRun: bool,
 };
 var buildConfig: BuildConfig = undefined;
-
-fn add_build_cli(b: *Build) !void {
-    const make_cli = b.option(bool, "make-cli", "Compile a Command-Line Application that prints the md5 hashes of all inputs to the console.") orelse false;
-    if (!make_cli) {
-        return;
-    }
-
-    const exe = b.addExecutable(.{
-        .name = "Md5-Cli",
-        .root_source_file = b.path("src/cli-Main.zig"),
-        .target = buildConfig.target,
-        .optimize = buildConfig.optimize,
-    });
-    exe.root_module.addImport("./Md5.zig", buildConfig.md5_module);
-
-    const install_step = b.addInstallArtifact(exe, .{});
-    b.getInstallStep().dependOn(&install_step.step);
-}
 
 fn add_build_wasm(b: *Build) !void {
     const make_wasm = b.option(bool, "make-wasm", "Compile a Module that can be used in WebAssembly") orelse false;
@@ -51,8 +33,8 @@ fn add_build_wasm(b: *Build) !void {
     };
 
     const exe = b.addExecutable(.{
-        .name = "Md5-Wasm",
-        .root_source_file = b.path("src/wasm-Main.zig"),
+        .name = "ShapezMinerSolver-Wasm",
+        .root_source_file = b.path("src/WasmMain.zig"),
         .target = target,
         .optimize = buildConfig.optimize,
     });
@@ -60,7 +42,11 @@ fn add_build_wasm(b: *Build) !void {
     exe.rdynamic = true;
     exe.entry = .disabled;
     exe.import_memory = true; // https://github.com/ziglang/zig/issues/8633
-    exe.root_module.addImport("./Md5.zig", buildConfig.md5_module);
+    exe.root_module.addImport("LibMain.zig", buildConfig.shapez_solver_module);
+
+    // explicitly set initial memory so compilation fails if it grows...
+    // because in that case the JS implementation must be updated as well.
+    exe.initial_memory = std.wasm.page_size * 31;
 
     const install_step = b.addInstallArtifact(exe, .{});
     b.getInstallStep().dependOn(&install_step.step);
@@ -73,32 +59,29 @@ fn run_tests(b: *Build) !void {
     }
 
     const tests = b.addTest(.{
-        .root_source_file = b.path("src/wasm-Main.zig"),
-        .target = b.resolveTargetQuery(.{ .cpu_arch = .x86_64, .os_tag = .linux }),
+        .root_source_file = b.path("src/TestsMain.zig"),
+        .target = buildConfig.target,
     });
-    tests.root_module.addImport("./Md5.zig", buildConfig.md5_module);
     const run_test = b.addRunArtifact(tests);
     b.getInstallStep().dependOn(&run_test.step);
 }
 
 pub fn build(b: *std.Build) !void {
     buildConfig = .{
-        .md5_module = undefined,
+        .shapez_solver_module = undefined,
         .target = b.standardTargetOptions(.{}),
         .optimize = b.standardOptimizeOption(.{
-            .preferred_optimize_mode = OptimizeMode.ReleaseSmall,
+            .preferred_optimize_mode = OptimizeMode.ReleaseFast,
         }),
         .doRun = b.option(bool, "run", "run the compiled application(s)") orelse false,
     };
 
-    buildConfig.md5_module = b.addModule("Md5", .{
-        .root_source_file = b.path("src/Md5.zig"),
+    buildConfig.shapez_solver_module = b.addModule("Shapez2MinerSolver", .{
+        .root_source_file = b.path("src/LibMain.zig"),
         .target = buildConfig.target,
         .optimize = buildConfig.optimize,
     });
 
     try run_tests(b);
-
-    try add_build_cli(b);
     try add_build_wasm(b);
 }
