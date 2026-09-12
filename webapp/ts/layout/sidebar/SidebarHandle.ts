@@ -5,6 +5,7 @@ import { SettingsPanel } from "./SettingsPanel.js";
 import { SettingObserver } from "../../Settings.js";
 import { Strings } from "../../Strings.js";
 import { HelpPanel } from "./HelpPanel.js";
+import { LinksPanel } from "./LinksPanel.js";
 
 enum ESidebarButtons {
     Help,
@@ -31,7 +32,7 @@ class SidebarButton {
                 this.panel = new SettingsPanel(title);
                 break;
             case ESidebarButtons.Links:
-                this.panel = new SidebarPanel(title); // TODO
+                this.panel = new LinksPanel(title);
                 break;
 
         }

@@ -259,4 +259,30 @@ export class Strings {
     public static referenceDtConsoleTitle = `<h3>"Console" Window</h3>`;
     public static referenceDtConsoleHtml = `<span style="white-space: pre-line">When things go wrong, or the solution seems weird, you should check the console.
         Any warnings or errors that occurred while solving will be shown here.</span>`;
+
+    public static linksSite = "[Site]";
+    public static linksGithub = "[GitHub]";
+    public static linksIeeeXplore = "[IEEE Xplore]";
+    public static linksWikiGg = "[wiki.gg]";
+    public static linksSteam = "[Steam]";
+
+    public static linksThisProject = "This Solver"
+    public static linksThisSource = "View the source code";
+    public static linksThisIssues = "Report issues";
+    public static linksThisOfflineVersion = "Download the offline version";
+    public static linksThisSupportMe = "Support me? :)";
+
+    public static linksRelatedProjects = "Related projects";
+    public static linksJiahaoSolver = "Jiahao Wang's miner solver";
+    public static linksJiahaoZmanSolver = "[Site2 by zman]";
+    public static linksPolyominoSolver = "Chase Meadors' solver for polyomino tiling";
+    public static linksResearchPaper1 = "Research paper: Deterministic polyomino packing algorithm";
+
+    public static linksMoreShapezTools = "More Shapez 2 Tools";
+    public static linksBlueprintInspector = "Blueprint Inspector";
+    public static linksZmanOperatorLeaderboard = "zman's Operator Level Leaderboard";
+    public static linksCommunityToolsIndex = "Wiki: Community Tools";
+
+    public static linksHonorableMentions = "Honorable Mentions";
+    public static linksLastCallBbs = "Last Call BBS (my primary UI inspiration)";
 }
