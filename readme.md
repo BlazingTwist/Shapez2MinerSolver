@@ -13,7 +13,7 @@ Runs entirely on your machine, from within your browser.
 
 ## Demo
 
-<video height="250px" controls src="docs/demo.webm"></video>
+[demo.webm](https://github.com/user-attachments/assets/1555ee8d-f351-4c38-abba-46c530f1aaa2)
 
 ## Brief algorithm description
 
