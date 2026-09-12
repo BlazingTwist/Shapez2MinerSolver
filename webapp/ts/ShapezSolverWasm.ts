@@ -305,7 +305,7 @@ export class ShapezSolverWasm {
                 if (response.ok) {
                     return response;
                 } else {
-                    const fallbackPath = "/ShapezMinerSolver-Wasm.wasm"; // static site url
+                    const fallbackPath = "ShapezMinerSolver-Wasm.wasm"; // static site url
                     console.log("fallback to", fallbackPath);
                     return fetch(fallbackPath).then(fallbackResponse => {
                         if (fallbackResponse.ok) {
