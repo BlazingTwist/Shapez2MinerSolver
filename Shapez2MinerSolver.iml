@@ -6,6 +6,7 @@
       <excludeFolder url="file://$MODULE_DIR$/webapp/js" />
       <excludeFolder url="file://$MODULE_DIR$/zig-out" />
     </content>
+    <content url="file://$MODULE_DIR$/dist" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

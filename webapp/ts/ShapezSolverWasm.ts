@@ -300,12 +300,12 @@ export class ShapezSolverWasm {
 
     private async init(): Promise<void> {
         const self = this;
-        await fetch("/zig-out/bin/ShapezMinerSolver-Wasm.wasm")
+        await fetch("/zig-out/bin/ShapezMinerSolver-Wasm.wasm") // development url
             .then(response => {
                 if (response.ok) {
                     return response;
                 } else {
-                    const fallbackPath = "/ShapezMinerSolver-Wasm.wasm";
+                    const fallbackPath = "/ShapezMinerSolver-Wasm.wasm"; // static site url
                     console.log("fallback to", fallbackPath);
                     return fetch(fallbackPath).then(fallbackResponse => {
                         if (fallbackResponse.ok) {

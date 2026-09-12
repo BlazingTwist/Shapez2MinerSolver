@@ -1,0 +1,69 @@
+name: Deploy all artifacts
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+jobs:
+  build:
+    name: Build the static site and offline version
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      contents: read
+    steps:
+      - uses: actions/checkout@v3
+
+      # setup
+      - uses: https://codeberg.org/mlugg/setup-zig@v2
+        with:
+          version: 0.13.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm install
+
+      # compile sources
+      - run: zig build --release -Dmake-wasm=true
+      - working-directory: ./webapp
+        run: npx tsc
+
+      # packaging
+      - name: Copy static page to ./pages
+        run: |
+          mkdir pages ;
+          cp -r webapp/css pages/css ;
+          cp -r webapp/js pages/js ;
+          cp -r webapp/resources pages/resources ;
+          cp webapp/index.html pages/ ;
+          cp zig-out/bin/ShapezMinerSolver-Wasm.wasm pages/ ;
+      - name: Package offline site for Windows
+        run: |
+          mkdir offline-windows ;
+          cp -r dist/rebex offline-windows/rebex ;
+          cp dist/run.bat offline-windows/ ;
+          cp -r pages/ offline-windows/webapp
+
+      # deploy github pages
+      - uses: actions/configure-pages@v4
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./pages
+
+      # attach offline version as artifact
+      - uses: actions/upload-artifact@v7
+        with:
+          name: Offline-Windows
+          path: ./offline-windows
+  deploy-pages:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
