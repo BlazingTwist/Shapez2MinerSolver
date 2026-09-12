@@ -16,6 +16,7 @@ export class MainLayout {
     readonly sidebar: SidebarHandle;
 
     constructor(container: HTMLElement) {
+        container.innerHTML = "";
         ShapeColors.injectStylesheet();
         InputManager.register();
 

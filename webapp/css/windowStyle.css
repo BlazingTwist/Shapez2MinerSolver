@@ -16,8 +16,15 @@ span, button, input {
     background: none;
     border: none;
 }
-span, button, input, textarea, select {
+span, button, input, textarea, select, ul, ol {
     font-size: 1em;
+}
+ul, ol {
+    padding-left: 1.5em;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    margin: 0;
+    white-space: normal;
 }
 #settings-panel button,
 #settings-panel input,

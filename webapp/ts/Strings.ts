@@ -200,4 +200,63 @@ export class Strings {
         Finish editing by left-clicking elsewhere, or by pressing <code>tab</code>.
         
         Holding multiple keys creates a key-chord.</span>`;
+
+    public static referenceHowToUseTitle = `<h2>How to use</h2>`;
+    public static referenceHowToUseHtml = `<ol>
+        <li>Drag extenders over the asteroid(s).</li>
+        <li>Copy the extenders and paste the blueprint in the "Input" window.</li>
+        <li>Press "SOLVE".</li>
+        <li>Copy the blueprint from the "Output" back into your game.</li>
+    </ol>`;
+    public static referenceHowToUse2Html = `<span style="white-space: pre-line">Note that the solver only places 2 kinds of miner-layouts:<ul>
+        <li>On the asteroid edge: a single miner with 3 extenders.</li>
+        <li>Otherwise: 3 miners with 3 extenders each.</li>
+    </ul>
+    You are expected to fill the remaining space (if any) yourself.</span>`;
+
+    public static referenceControlsTitle = `<h2>"Secret" Controls</h2>`;
+    public static referenceControlsZoomTitle = `<span>Preview canvas zooming:</span>`;
+    public static referenceControlsZoomHtml = `<span style="white-space: pre-line">Hold CTRL while left-click-dragging on the canvas.
+        Or: Hold CTRL while scrolling with the mouse wheel.
+        On mobile, you can 2-finger pinch to zoom.</span>`;
+    public static referenceControlsResizeTitle = `<span>Resizing Windows:</span>`;
+    public static referenceControlsResizeHtml = `<span style="white-space: pre-line">Drag the left/right edge of the windows to grow/shrink them horizontally.
+        Drag the left edge of the sidebar to grow/shrink it.
+        Drag the bottom/top edge of the "Preview" window to grow/shrink it vertically.</span>`;
+
+    public static referenceDetailedExplanationsTitle = `<h2>Detailed Window Explanations</h2>`;
+    public static referenceDtInputWinTitle = `<h3>"Input" Window</h3>`;
+    public static referenceDtInputWinHtml = `<ol>
+        <li>This is the input blueprint. Supported versions are 'SHAPEZ2-4' and 'SHAPEZ2-5'.</li>
+        <li>The dropdown provides some example blueprints. This way you can experiment with the solver without starting the game.</li>
+        <li>Press this button to start the Solver.</li>
+    </ol>`;
+    public static referenceDtPreviewTitle = `<h3>"Preview" Window</h3>`;
+    public static referenceDtPreviewHtml = `<ol>
+        <li>These buttons change how the solution is visualized.<ol>
+            <li>Show as a bitmap (low performance cost) - it assigns each miner a different color.</li>
+            <li>Show as icons (moderate to high performance cost) - each tile gets an icon, identifying extenders, belts and lifts.</li>
+            <li>Show occupancy (low performance cost) - marks occupied tiles in bright green.</li>
+        </ol></li>
+        <li>This hides the preview. On low-end devices this can improve performance.</li>
+        <li>Shows the progress of the solver.</li>
+        <li>Enables/disables the tooltip.</li>
+        <li>The tooltip shows basic information on the hovered tile. The 'world'-coordinate is relative to the blueprint center. The 'island'-coordinate is relative to the bounds of the asteroid, starting at (0,0) in the top-left.</li>
+        <li>Each decision of the solver can be inspected on this timeline.</li>
+    </ol>`;
+    public static referenceDtOutputTitle = `<h3>"Output" Window</h3>`;
+    public static referenceDtOutputHtml = `<ol>
+        <li>This is the output blueprint. It will use the same version as the input blueprint.</li>
+        <li>Press this button to copy the output blueprint.</li>
+    </ol>`;
+    public static referenceDtStatsTitle = `<h3>"Stats" Window</h3>`;
+    public static referenceDtStatsHtml = `<ol>
+        <li>This selects for which asteroid statistics are shown. The selected asteroid will also be marked on the "Preview" Window.</li>
+        <li>The number of miners placed. This indicates the quality of the solution.</li>
+        <li>This tells you how many space-belts you need for the asteroid. For example: if your miner blueprint outputs onto 2 floors, then you'll need 17 belts with 8 miners each, and an additional belt with 2 miners.</li>
+        <li>Secondary quality metrics. Fewer gap-ties, gap-islands and runtime is better. Gap-islands are the number of unoccupied regions. Runtime is measured for each phase, you can hover on the numbers to see a brief description on what each phase does.</li>
+    </ol>`;
+    public static referenceDtConsoleTitle = `<h3>"Console" Window</h3>`;
+    public static referenceDtConsoleHtml = `<span style="white-space: pre-line">When things go wrong, or the solution seems weird, you should check the console.
+        Any warnings or errors that occurred while solving will be shown here.</span>`;
 }

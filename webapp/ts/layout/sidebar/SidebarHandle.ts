@@ -4,6 +4,7 @@ import { LayoutHelper } from "../LayoutHelper.js";
 import { SettingsPanel } from "./SettingsPanel.js";
 import { SettingObserver } from "../../Settings.js";
 import { Strings } from "../../Strings.js";
+import { HelpPanel } from "./HelpPanel.js";
 
 enum ESidebarButtons {
     Help,
@@ -24,7 +25,7 @@ class SidebarButton {
         this.title = title;
         switch (button) {
             case ESidebarButtons.Help:
-                this.panel = new SidebarPanel(title); // TODO
+                this.panel = new HelpPanel(title);
                 break;
             case ESidebarButtons.Settings:
                 this.panel = new SettingsPanel(title);
