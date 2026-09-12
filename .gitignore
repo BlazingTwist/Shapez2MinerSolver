@@ -1,5 +1,4 @@
 zig-out
 .zig-cache
-package-lock.json
 _notes
 node_modules
